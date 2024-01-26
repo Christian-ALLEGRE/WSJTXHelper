@@ -3,7 +3,7 @@ WSJXTHelper : Help WSJTX Calling CQ for long distances and high power.
 
 I wrote this program to solve two problems i had using WSJTX in trying to get a QSO with Alaska :
 
-1) When I Call CQ, if the "EnableTX" button is still checked within the 2 seconds of the end of the trame, 
+1) When I Call CQ, if the "EnableTX" button is still checked within the 2 seconds of the end of the frame, 
    users that reply to me changes my configuration so that WSJTX will reply to them instead of continuing 
    my call to Alaska at next transmission period. 
    Than was anoying... 
@@ -14,7 +14,7 @@ I wrote this program to solve two problems i had using WSJTX in trying to get a 
    So, during my calls, I want to set Power to 80W, and to prevent antenna damage, 
    i want to transmit only one frame by minutes instead of two. 
 
-To do this, i was constantly disabling transmission two seconds before the end of trame, 
+To do this, i was constantly disabling transmission two seconds before the end of frame, 
 wait 45 seconds, before Enabling TX again for 13 seconds. This was very anoying....
 
 So, I wrote this program to do this automatically.
@@ -42,7 +42,7 @@ In WSJTXHelper (having WSJTX visible on your screen) :
   3) When calibration is done, WSJTXHelper memorize the "Enable TX" button position, 
      and the "Start" button becomes enabled.
 
-  4) Check the "Only 1 CQ / mn" checkbox if you want to transmit only 1 trame by minutes (instead of 2).
+  4) Check the "Only 1 CQ / mn" checkbox if you want to transmit only 1 frame by minutes (instead of 2).
 
   5) Click the "Start" button.
      WSJTXHelper will synchronize itself on the current time.
@@ -51,7 +51,7 @@ In WSJTXHelper (having WSJTX visible on your screen) :
      then, 3 seconds later, it will click it again, disabling next transmission (but current transmission continue), 
      and preventing responders to change your current calling configuration.
      if you have "Only 1 CQ / mn" checked, it will not click "EnableTX" at time 30s and 45s, 
-     so you will send only one trame by minute instead of two.
+     so you will send only one frame by minute instead of two.
 
 This project was compiled using VisualStudio 2015, 
 and the source code is in C++ language (to be able to easily access "win32" and "user" Windows DLLs).
