@@ -7,17 +7,17 @@ I wrote this program to solve two problems i had using WSJTX in trying to get a 
    users that reply to me changes my configuration so that WSJTX will reply to them instead of continuing 
    my call to Alaska at next transmission period. 
    That was anoying... 
-   Sorry for them, but I'm calling Alaska and I don't want to reply to them.
+   Sorry for them, but I'm calling Alaska and I don't want to reply to them at this time.
 
 2) I'm using a Diamond CP-6S antenna, witch is supposed to be powered with only 40W in digital modes (FT8, FT4, MSK144, ...)
-   And I need more pover to be heard in Alaska. At least 80W...
+   But I need more pover to be heard in Alaska. At least 80W...
    So, during my calls, I want to set power to 80W, and to prevent antenna damage, 
-   i want to transmit only one frame by minute instead of two. 
+   i want to transmit only one 15s frame by minute instead of two. 
 
 To do this, i was constantly disabling transmission two seconds before the end of the frame, 
-waiting 45 seconds, before Enabling TX again for 13 seconds. This was very anoying....
+waiting 45 seconds, before Enabling TX again for 13 seconds. This was very anoying...
 
-So, I wrote this program to do this automatically.
+So, I wrote this WSJTXHelper program to do this automatically.
 
 How to use WSJTXHelper :
 
@@ -32,7 +32,7 @@ In WSJTX :
 
 In WSJTXHelper (having WSJTX visible on your screen) :
 
-  1) Check the "even/1st" check box in the same way you check/uncheck the same checkbox in WSJTX.
+  1) Check the "even/1st" check box in the same way you check/uncheck the identical checkbox in WSJTX.
 
   2) Click the "Calibrate" button to teach WSJTXHelper where the "EnableTX" button is in WSJTX.
      Right click on "EnableTX" in WSJTX window (this will not start transmission) .
@@ -47,9 +47,9 @@ In WSJTXHelper (having WSJTX visible on your screen) :
   5) Click the "Start" button.
      WSJTXHelper will synchronize itself on the current time.
      At time 0s and 30s (if even/1st is checked), or at time 15s and 45s (if even/1st is unchecked)
-     il will automatically click the "EnableTX" button in WSJTX (this start transmission)
-     then, 3 seconds later, it will click it again, disabling next transmission (but current transmission continue), 
-     and preventing responders to change your current calling configuration.
+     il will automatically click the "EnableTX" button in WSJTX (this starts the transmission)
+     then, 3 seconds later, it will click it again, disabling next transmission (but current transmission continues to run), 
+     and preventing responders to change your current calling configuration in WSJTX.
      if you have "Only 1 CQ / mn" checked, it will not click "EnableTX" at time 30s and 45s, 
      so you will send only one frame by minute instead of two.
 
