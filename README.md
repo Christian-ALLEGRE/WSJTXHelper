@@ -6,22 +6,22 @@ I wrote this program to solve two problems i had using WSJTX in trying to get a 
 1) When I Call CQ, if the "EnableTX" button is still checked within the 2 seconds of the end of the frame, 
    users that reply to me changes my configuration so that WSJTX will reply to them instead of continuing 
    my call to Alaska at next transmission period. 
-   Than was anoying... 
+   That was anoying... 
    Sorry for them, but I'm calling Alaska and I don't want to reply to them.
 
-2) I'm using a Diamond CP-6S antenna, witch is suppose to be powered with only 40W in digital modes (FT8, FT4, MSK144, ...)
+2) I'm using a Diamond CP-6S antenna, witch is supposed to be powered with only 40W in digital modes (FT8, FT4, MSK144, ...)
    And I need more pover to be heard in Alaska. At least 80W...
-   So, during my calls, I want to set Power to 80W, and to prevent antenna damage, 
-   i want to transmit only one frame by minutes instead of two. 
+   So, during my calls, I want to set power to 80W, and to prevent antenna damage, 
+   i want to transmit only one frame by minute instead of two. 
 
-To do this, i was constantly disabling transmission two seconds before the end of frame, 
-wait 45 seconds, before Enabling TX again for 13 seconds. This was very anoying....
+To do this, i was constantly disabling transmission two seconds before the end of the frame, 
+waiting 45 seconds, before Enabling TX again for 13 seconds. This was very anoying....
 
 So, I wrote this program to do this automatically.
 
 How to use WSJTXHelper :
 
-Start WSJTX and this program.
+Start WSJTX and WSJTXHelper program.
 
 In WSJTX :
   Check or uncheck the "even/1st" check box so that your CQ will be done during even/1st period if you beam to East or South,
@@ -52,6 +52,8 @@ In WSJTXHelper (having WSJTX visible on your screen) :
      and preventing responders to change your current calling configuration.
      if you have "Only 1 CQ / mn" checked, it will not click "EnableTX" at time 30s and 45s, 
      so you will send only one frame by minute instead of two.
+
+As WSJTXHelper relies on mouse move/click events, WSJTX should always be visible for this process to work.
 
 This project was compiled using VisualStudio 2015, 
 and the source code is in C++ language (to be able to easily access "win32" and "user" Windows DLLs).
