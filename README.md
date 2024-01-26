@@ -53,6 +53,7 @@ In WSJTXHelper (having WSJTX visible on your screen) :
      if you have "Only 1 CQ / mn" checked, it will not click "EnableTX" at time 30s and 45s, 
      so you will send only one trame by minute instead of two.
 
-
+This project was compiled using VisualStudio 2015, 
+and the source code is in C++ language (to be able to easily access "win32" and "user" Windows DLLs).
 
 
