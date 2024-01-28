@@ -57,5 +57,16 @@ As WSJTXHelper relies on mouse move/click events, WSJTX should always be visible
 
 This project was compiled using VisualStudio 2015, 
 and the source code is in C++ language (to be able to easily access "win32" and "user" Windows DLLs).
+The executable WSJTXHelper.exe is located in the "Debug" directory.
+
+V1.1 2024/01/28 :
+  Added the "Prevent Auto Reply" checkbox. When it is checked, the program act as in V1.0 
+  and uncheck the "Enable TX" in WSJTX 3s after checking it.
+  But if you unchecked it, it will leaves the "Enable TX" button checked so that replies to your call will be normally managed by WSJTX.
+
+  Save window position, checkboxes state, and calibration in Windows registries.
+
+  The version V1.1 was compiled using VisualStudio 2015 - Update3, 
+  and the executable WSJTXHelper.exe is now located in the "x64/Debug" directory.
 
 

@@ -38,7 +38,6 @@ BOOL CWSJTXHelperApp::InitInstance()
 {
 	CWinApp::InitInstance();
 
-
 	// Créer le gestionnaire de shell, si la boîte de dialogue contient
 	// des contrôles d'arborescence ou de liste de shell.
 	CShellManager *pShellManager = new CShellManager;
@@ -53,7 +52,8 @@ BOOL CWSJTXHelperApp::InitInstance()
 	// Changez la clé de Registre sous laquelle nos paramètres sont enregistrés
 	// TODO: modifiez cette chaîne avec des informations appropriées,
 	// telles que le nom de votre société ou organisation
-	SetRegistryKey(_T("Applications locales générées par AppWizard"));
+	//SetRegistryKey(_T("Applications locales générées par AppWizard"));
+	SetRegistryKey(_T("F4LAA"));
 
 	CWSJTXHelperDlg dlg;
 	m_pMainWnd = &dlg;

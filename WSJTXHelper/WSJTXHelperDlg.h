@@ -23,7 +23,7 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_WSJTXHELPER_DIALOG };
 #endif
-	UINT m_nTimer;
+	UINT_PTR m_nTimer;
 	long m_TimerValue;
 	long m_STimerValue;
 	CProgressCtrl	m_Progress;
@@ -42,6 +42,7 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
+	afx_msg void OnClose();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:

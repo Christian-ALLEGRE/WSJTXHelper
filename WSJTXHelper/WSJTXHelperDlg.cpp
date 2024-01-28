@@ -5,6 +5,8 @@
 #include "WSJTXHelper.h"
 #include "WSJTXHelperDlg.h"
 #include "afxdialogex.h"
+#include "KeyDef.h"
+#include "RegKey.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -65,6 +67,7 @@ BEGIN_MESSAGE_MAP(CWSJTXHelperDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_BUTTONSTART, &CWSJTXHelperDlg::OnBnClickedButtonstart)
 	ON_BN_CLICKED(IDC_BUTTONSTOP, &CWSJTXHelperDlg::OnBnClickedButtonstop)
 	ON_BN_CLICKED(IDC_BUTTONCALIBRATE, &CWSJTXHelperDlg::OnBnClickedButtoncalibrate)
@@ -96,10 +99,10 @@ COLORREF CWSJTXHelperDlg::GetColor(int when)
 }
 
 void CALLBACK EXPORT TimerProc(
-	HWND hWnd,      // handle of CWnd that called SetTimer
-	UINT nMsg,      // WM_TIMER
-	UINT nIDEvent,   // timer identification
-	DWORD dwTime    // system time
+	HWND hWnd,			// handle of CWnd that called SetTimer
+	UINT nMsg,			// WM_TIMER
+	UINT_PTR nIDEvent,  // timer identification
+	DWORD dwTime		// system time
 )
 {
 	SYSTEMTIME st;
@@ -114,6 +117,15 @@ void CALLBACK EXPORT TimerProc(
 		Dlg->m_STimerValue = Dlg->m_TimerValue;
 		Dlg->ManageMouse(st.wSecond);
 	}
+}
+
+char buff[10];
+char* Str2Char(CString s)
+{
+	for (int i = 0; i < s.GetLength(); i++)
+		buff[i] = (char)s.GetBuffer(0)[i];
+	buff[s.GetLength()] = '\0';
+	return buff;
 }
 
 BOOL CWSJTXHelperDlg::OnInitDialog()
@@ -147,11 +159,47 @@ BOOL CWSJTXHelperDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Définir une petite icône
 
 	// TODO: ajoutez ici une initialisation supplémentaire
+	EnableTXPos.x = 0;
+	EnableTXPos.y = 0;
+	// Restore window position
+	WINDOWPLACEMENT wp;
+	wp.length = sizeof wp;
+	if (GetWindowPlacement(&wp))
+	{
+		int top = atoi(Str2Char(GetUserKey(CString(TOP)).GetBuffer(0)));
+		int left = atoi(Str2Char(GetUserKey(CString(LEFT)).GetBuffer(0)));
+		int bottom = atoi(Str2Char(GetUserKey(CString(BOTTOM)).GetBuffer(0)));
+		int right = atoi(Str2Char(GetUserKey(CString(RIGHT)).GetBuffer(0)));
+		if ((bottom > top) && (right > left)) // Values where stored in regitry
+		{
+			// Retore position and size
+			wp.rcNormalPosition.top = top;
+			wp.rcNormalPosition.left = left;
+			wp.rcNormalPosition.bottom = bottom;
+			wp.rcNormalPosition.right = right;
+			SetWindowPlacement(&wp);
+
+			// Restore CheckBoxes
+			CButton* cb = (CButton*)GetDlgItem(IDC_CHECK1ST);
+			cb->SetCheck(GetUserKey(CString(FIRST)) == "1" ? 1 : 0);
+			cb = (CButton*)GetDlgItem(IDC_CHECKONLY1);
+			cb->SetCheck(GetUserKey(CString(ONLY1)) == "1" ? 1 : 0);
+			cb = (CButton*)GetDlgItem(IDC_CHECKPREVENTAUTOREPLY);
+			cb->SetCheck(GetUserKey(CString(PREVENTAUTOREPLY)) == "1" ? 1 : 0);
+
+			EnableTXPos.x = atoi(Str2Char(GetUserKey(CString(ENABLETXPOSX)).GetBuffer(0)));
+			EnableTXPos.y = atoi(Str2Char(GetUserKey(CString(ENABLETXPOSY)).GetBuffer(0)));
+		}
+	}
+
 	CButton* button = (CButton*)GetDlgItem(IDC_BUTTONSTART);
-	button->EnableWindow(false);
+	button->EnableWindow(EnableTXPos.x > 0 ? true : false);
+	if (EnableTXPos.x > 0)
+		SetDlgItemText(IDC_MESSAGE, CString("Using last Calibration"));
+	else
+		SetDlgItemText(IDC_MESSAGE, CString("Please Calibrate before Start"));
 	button = (CButton*)GetDlgItem(IDC_BUTTONSTOP);
 	button->EnableWindow(false);
-	SetDlgItemText(IDC_MESSAGE, CString("Please Calibrate before Start"));
 
 	m_Progress.SetRange(0, TIMERMAX);
 	m_ProgressMn.SetRange(0, 4 * TIMERMAX);
@@ -170,6 +218,26 @@ void CWSJTXHelperDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	{
 		CDialogEx::OnSysCommand(nID, lParam);
 	}
+}
+
+void CWSJTXHelperDlg::OnClose()
+{
+	CreateUserKey(CString("F4LAA"));
+	SetUserKey(CString(FIRST), IsDlgButtonChecked(IDC_CHECK1ST) ? CString("1") : CString("0"));
+	SetUserKey(CString(ONLY1), IsDlgButtonChecked(IDC_CHECKONLY1) ? CString("1") : CString("0"));
+	SetUserKey(CString(PREVENTAUTOREPLY), IsDlgButtonChecked(IDC_CHECKPREVENTAUTOREPLY) ? CString("1") : CString("0"));
+
+	WINDOWPLACEMENT wp;
+	wp.length = sizeof wp;
+	if (GetWindowPlacement(&wp))
+	{
+		SetUserKey(CString(TOP), IString(wp.rcNormalPosition.top));
+		SetUserKey(CString(LEFT), IString(wp.rcNormalPosition.left));
+		SetUserKey(CString(BOTTOM), IString(wp.rcNormalPosition.bottom));
+		SetUserKey(CString(RIGHT), IString(wp.rcNormalPosition.right));
+	}
+
+	CDialog::OnClose();
 }
 
 // Si vous ajoutez un bouton Réduire à votre boîte de dialogue, vous devez utiliser le code ci-dessous
@@ -210,7 +278,6 @@ HCURSOR CWSJTXHelperDlg::OnQueryDragIcon()
 
 void CWSJTXHelperDlg::OnBnClickedButtonstart()
 {
-	// TODO: ajoutez ici le code de votre gestionnaire de notification de contrôle
 	CButton* button = (CButton*)GetDlgItem(IDC_BUTTONSTART);
 	button->EnableWindow(false);
 	button = (CButton*)GetDlgItem(IDC_BUTTONSTOP);
@@ -226,14 +293,15 @@ void CWSJTXHelperDlg::OnBnClickedButtonstart()
 	m_STimerValue = m_TimerValue;
 
 	// Start Timer
-	m_nTimer = SetTimer(NULL, 250, TimerProc);
+	UINT_PTR timerId = 0;
+	m_nTimer = SetTimer(timerId, 250, TimerProc);
 }
 
 void CWSJTXHelperDlg::OnBnClickedButtonstop()
 {
-	// TODO: ajoutez ici le code de votre gestionnaire de notification de contrôle
 	// Stop Timer
-	m_nTimer = SetTimer(NULL, -1, NULL);
+	UINT_PTR timerID = 0; 
+	m_nTimer = SetTimer(timerID, -1, NULL);
 	m_TimerValue = 0;
 	m_STimerValue = 0;
 	m_Progress.SetPos(0);
@@ -285,15 +353,17 @@ void CWSJTXHelperDlg::ManageMouse(int when)
 		// 1st checked : 0s and 30s
 		if (when == 0)
 			EnableTX();
-		if (when == 3)
-			DisableTX();
+		if (Dlg->IsDlgButtonChecked(IDC_CHECKPREVENTAUTOREPLY))
+			if (when == 3)
+				DisableTX();
 
 		if (!Dlg->IsDlgButtonChecked(IDC_CHECKONLY1))
 		{
 			if (when == 30)
 				EnableTX();
-			if (when == 33)
-				DisableTX();
+			if (Dlg->IsDlgButtonChecked(IDC_CHECKPREVENTAUTOREPLY))
+				if (when == 33)
+					DisableTX();
 		}
 	}
 	else
@@ -301,15 +371,17 @@ void CWSJTXHelperDlg::ManageMouse(int when)
 		// 1st not checked : 15s and 45s
 		if (when == 15)
 			EnableTX();
-		if (when == 18)
-			DisableTX();
+		if (Dlg->IsDlgButtonChecked(IDC_CHECKPREVENTAUTOREPLY))
+			if (when == 18)
+				DisableTX();
 
 		if (!Dlg->IsDlgButtonChecked(IDC_CHECKONLY1))
 		{
 			if (when == 45)
 				EnableTX();
-			if (when == 48)
-				DisableTX();
+			if (Dlg->IsDlgButtonChecked(IDC_CHECKPREVENTAUTOREPLY))
+				if (when == 48)
+					DisableTX();
 		}
 	}
 }
@@ -332,6 +404,8 @@ void CWSJTXHelperDlg::OnBnClickedButtoncalibrate()
 		SetDlgItemText(IDC_MESSAGE, CString("OK: Calibrated. X=") + IString(EnableTXPos.x) + " Y=" + IString(EnableTXPos.y));
 		CButton* bStart = (CButton*)GetDlgItem(IDC_BUTTONSTART);
 		bStart->EnableWindow(true);
+		SetUserKey(CString(ENABLETXPOSX), IString(EnableTXPos.x));
+		SetUserKey(CString(ENABLETXPOSY), IString(EnableTXPos.y));
 	}
 	else
 		SetDlgItemText(IDC_MESSAGE, CString("KO: Not calibrated."));
